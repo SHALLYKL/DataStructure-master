@@ -27,8 +27,8 @@ var maze = [
     [1,0,0,0,0,1,0,0,1,0]
 ]
 //maze,start=Pos,end=Pos
-var startP = [2,0];
-var endP = [6,9];
+var startP = [0,2];
+var endP = [9,6];
 var start = new Pos();
 start.seat = { x: startP[0], y: startP[1]};
 var end = new Pos();
@@ -36,9 +36,9 @@ end.seat = {x:endP[0],y:endP[1]};
 
 var row = maze.length;
 var col = maze[0].length;
-function MazePath(_maze,start,end){
+function MazePath(_maze,_start,_end){
     var stack = new SqStack();
-    let curPos = start;
+    let curPos = _start;
     let curStep = 1;
     do{
         if (Pass(curPos)) {//当前位置可通过并且是未曾走到过的通道块
@@ -50,9 +50,10 @@ function MazePath(_maze,start,end){
             // e.seat = curPos;
             e.di = 1;
             e.passed = 1;
+            e.type = _maze[curPos.seat.y][curPos.seat.x];
             stack.push(e);
-            if (curPos.seat == end.seat) return stack;
-
+            if (curPos.seat == _end.seat) return stack;
+            console.log("通过",stack);
             curPos = NextPos(_maze,curPos, 1);//下一位置是当前位置的东邻
             curStep++;//探索下一步
         } else {//当前位置不能通过
@@ -68,6 +69,7 @@ function MazePath(_maze,start,end){
                     stack.push(e);//换下一个方向探索
                     curPos = NextPos(_maze,e, e.di);//设定当前位置为该新方向上的相邻块
                 }
+                console.log("不通过", stack);
             }
         }
     }while(!stack.isEmpty());
@@ -100,7 +102,7 @@ function NextPos(_maze,pos,di){
     if(p.y>=row) return null;//超出边界
     let newP = new Pos();
     newP.seat = p;
-    newP.type = _maze[p.x][p.y];
+    newP.type = _maze[p.y][p.x];
     return newP;
 }
 console.log(MazePath(maze, start, end));
