@@ -1,0 +1,78 @@
+// const SqStack = require("SqStack");
+import SqStack from './SqStack.js';
+// const SqStack = require("SqStack");
+var col = 10;
+var row = 10;
+var Pos = {
+    passed:0,//是否已通过
+    dePassed:0,//是否标记为不可通过
+    type:1,//当前块的类型（可通过的类型为1，不可通过的为0）
+    index:0,//通道块在迷宫中的唯一标识
+    ord:0,//通道块在路径上的'序号'
+    seat:{x:0,y:0},//此通道块的位置 坐标原点为左上角，向下为y正，向右为x正
+    di:1,//此通道块走向下一通道块的方向
+} //栈的元素类型
+var maze = [[0,0,0,1,0,1,1,1]]
+//maze,start=Pos,end=Pos
+function MazePath(maze,start,end){
+    var stack = new SqStack();
+    let curPos = start;
+    let curStep = 1;
+    do{
+        if (Pass(curPos)) {//当前位置可通过并且是未曾走到过的通道块
+            FootPrint(curPos);//留下足迹
+            // let e = [curStep, curPos, 1];
+            // let e = new Pos();
+            let e = curPos;
+            e.ord = curStep;
+            // e.seat = curPos;
+            e.di = 1;
+            e.passed = 1;
+            stack.push(e);
+            if (curPos.index == end.index) return stack;
+            curPos = NextPos(curPos, 1);//下一位置是当前位置的东邻
+            curStep++;//探索下一步
+        } else {//当前位置不能通过
+            if (!stack.isEmpty()) {
+                let e = stack.pop();
+                while (e.di == 4 && !stack.isEmpty()){
+                    //留下不能通过的标记，并退回一步
+                    MarkPrint(e.seat); 
+                    e = stack.pop();
+                }
+                if (e.di < 4) {
+                    e.di++;
+                    stack.push(e);//换下一个方向探索
+                    curPos = NextPos(e.seat, e.di);//设定当前位置为该新方向上的相邻块
+                }
+            }
+        }
+    }while(!stack.isEmpty());
+
+    return false;
+
+}
+function Pass(pos){
+    return pos.type===1 && pos.passed==0 && pos.dePassed==0;
+}
+function FootPrint(pos){
+    pos.passed = 1;
+}
+function MarkPrint(pos){
+    pos.dePassed = 1;
+}
+function NextPos(pos,di){
+    let p = pos.seat;
+    if(di==1){//右
+        p = { x: p.x + 1, y: p.y };
+    }else if(di==2){//下
+        p = { x: p.x, y: p.y+1 };
+    }else if(di==3){//左
+        p = {x:p.x-1,y:p.y};
+    }else if(di==4){//上
+        p = {x:p.x,y:p.y-1};
+    }
+    let newP = new Pos();
+    newP.seat = p;
+}
+Maze();
