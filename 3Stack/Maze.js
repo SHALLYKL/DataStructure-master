@@ -58,18 +58,24 @@ function MazePath(_maze,_start,_end){
             curStep++;//探索下一步
         } else {//当前位置不能通过
             if (!stack.isEmpty()) {
+                console.log("不通过", curPos);
                 let e = stack.pop();
+                while(!e && !stack.isEmpty()) {
+                    e = stack.pop();
+                }
+                // if(!e){e=stack.pop();}
                 if (e.di == 4 && !stack.isEmpty()){
                     //留下不能通过的标记，并退回一步
                     MarkPrint(e.seat); 
                     e = stack.pop();
+                }else{
+                    if(e.di<4){
+                        e.di++;
+                        curPos = NextPos(_maze, e, e.di);//设定当前位置为该新方向上的相邻块
+                        stack.push(curPos);//换下一个方向探索
+                    }
                 }
-                if (e.di < 4) {
-                    e.di++;
-                    curPos = NextPos(_maze,e, e.di);//设定当前位置为该新方向上的相邻块
-                    stack.push(curPos);//换下一个方向探索
-                }
-                console.log("不通过", stack);
+             
             }
         }
     }while(!stack.isEmpty());
