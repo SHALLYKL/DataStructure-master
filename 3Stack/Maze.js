@@ -1,12 +1,16 @@
-// const SqStack = require("SqStack");
+/*
+ * @Descripttion: 栈的应用——迷宫
+ * @Author: kl <657669149@qq.com>
+ * @Date: 2020-08-10 17:18:45
+ * @LastEditors: kl
+ * @LastEditTime: 2020-08-11 20:41:23
+ */
+
 import SqStack from './SqStack.js';
-// const SqStack = require("SqStack");
-var col = 10;
-var row = 10;
 var Pos = function(){
     return {
         passed: 0,//是否已通过
-        dePassed: 0,//是否标记为不可通过
+        // dePassed: 0,//是否标记为不可通过
         type: 1,//当前块的类型（可通过的类型为1，不可通过的为0）
         index: 0,//通道块在迷宫中的唯一标识
         ord: 0,//通道块在路径上的'序号'
@@ -26,19 +30,20 @@ var maze = [
     [1,0,0,0,0,1,1,1,1,0],
     [1,0,0,0,0,1,0,0,1,0]
 ]
+
 //maze,start=Pos,end=Pos
 var startP = [0,2];
 var endP = [9,6];
-var start = new Pos();
-start.seat = { x: startP[0], y: startP[1]};
-var end = new Pos();
-end.seat = {x:endP[0],y:endP[1]};
 
 var row = maze.length;
 var col = maze[0].length;
+var dePassedL = [];//已标记为不可通过的列表
+var passedL = [];//已标记为走过的列表
 function MazePath(_maze,_start,_end){
     var stack = new SqStack();
-    let curPos = _start;
+    // let curPos = _start;
+    let curPos = getP({ x: _start[0], y: _start[1]});
+    let endPos = getP({ x: _end[0], y: _end[1]});
     let curStep = 1;
     do{
         if (Pass(curPos)) {//当前位置可通过并且是未曾走到过的通道块
@@ -52,7 +57,7 @@ function MazePath(_maze,_start,_end){
             e.passed = 1;
             e.type = _maze[curPos.seat.y][curPos.seat.x];
             stack.push(e);
-            if (curPos.seat == _end.seat) return stack;
+            if (curPos.index == endPos.index) return stack;
             console.log("通过",stack);
             curPos = NextPos(_maze,curPos, 1);//下一位置是当前位置的东邻
             curStep++;//探索下一步
@@ -60,22 +65,16 @@ function MazePath(_maze,_start,_end){
             if (!stack.isEmpty()) {
                 console.log("不通过", curPos);
                 let e = stack.pop();
-                while(!e && !stack.isEmpty()) {
-                    e = stack.pop();
+                while(e.di==4 && !stack.isEmpty()){
+                    MarkPrint(e);
+                    e = stack.pop();//留下不能通过的标记，并退回一步
+                    curStep--;
                 }
-                // if(!e){e=stack.pop();}
-                if (e.di == 4 && !stack.isEmpty()){
-                    //留下不能通过的标记，并退回一步
-                    MarkPrint(e.seat); 
-                    e = stack.pop();
-                }else{
-                    if(e.di<4){
-                        e.di++;
-                        curPos = NextPos(_maze, e, e.di);//设定当前位置为该新方向上的相邻块
-                        stack.push(curPos);//换下一个方向探索
-                    }
+                if (e.di < 4) {
+                    e.di++;
+                    stack.push(e);//换下一个方向探索
+                    curPos = NextPos(_maze, e, e.di);//设定当前位置为该新方向上的相邻块
                 }
-             
             }
         }
     }while(!stack.isEmpty());
@@ -83,15 +82,22 @@ function MazePath(_maze,_start,_end){
     return false;
 
 }
+function getP(seat){
+    let p = new Pos();
+    p.seat = seat;
+    p.type = maze[seat.y][seat.x];
+    p.index = getIndex(seat);
+    return p;
+}
 function Pass(pos){
     if(!pos) return false;
-    return pos.type===1 && pos.passed==0 && pos.dePassed==0;
+    return pos.type===1 && passedL.indexOf(pos.index)==-1 && dePassedL.indexOf(pos.index)==-1;
 }
 function FootPrint(pos){
-    pos.passed = 1;
+    passedL.push(pos.index);
 }
 function MarkPrint(pos){
-    pos.dePassed = 1;
+    dePassedL.push(pos.index);
 }
 function NextPos(_maze,pos,di){
     let p = pos.seat;
@@ -104,11 +110,11 @@ function NextPos(_maze,pos,di){
     }else if(di==4){//上
         p = {x:p.x,y:p.y-1};
     }
-    if(p.x>=col) return null;//超出边界
-    if(p.y>=row) return null;//超出边界
-    let newP = new Pos();
-    newP.seat = p;
-    newP.type = _maze[p.y][p.x];
-    return newP;
+    if(p.x>=col || p.x<0) return null;//超出边界
+    if(p.y>=row||p.y<0) return null;//超出边界
+    return getP(p);
 }
-console.log(MazePath(maze, start, end));
+function getIndex(p){
+    return p.x + p.y * col;
+}
+console.log(MazePath(maze, startP, endP));
