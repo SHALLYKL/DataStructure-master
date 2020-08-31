@@ -9,7 +9,7 @@ var proto = TSMatrix.prototype;
  * @param {M} M ={data:{[null,{i,j,e},...]},mu:矩阵的行数,nu:矩阵的列数,tu:非零个数}
  * @returns {Boolean} true
  */
-proto.reverse = function (M, T) {
+proto.TransposeSMatrix = function (M, T) {
     //采用三元组表存储表示，求稀疏矩阵M的转置矩阵T。
     T.mu = M.nu; T.nu = M.mu; T.tu = M.tu;
     if (T.tu) {
@@ -26,4 +26,16 @@ proto.reverse = function (M, T) {
         }
     }
     return true;
+}
+/**
+ * 快速转置矩阵 
+ * @param {M} M ={data:{[null,{i,j,e},...]},mu:矩阵的行数,nu:矩阵的列数,tu:非零个数}
+ * @returns {Boolean} true
+ */
+proto.FastTransposeSMatrix = function(M,T){
+    T.mu = M.nu; T.nu = M.mu; T.tu = M.tu;
+    if(T.tu){
+        
+    }
+
 }
