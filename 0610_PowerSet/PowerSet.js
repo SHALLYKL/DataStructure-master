@@ -8,8 +8,8 @@
 function GetPowerSet(i,A,B){
     let k = 0;
     let e;
-    if (i > A.length) {
-        return B;
+    if (i >= A.length) {
+        console.log(B);
     } else {
         e = A[i];
         k = B.length;
@@ -21,3 +21,5 @@ function GetPowerSet(i,A,B){
         GetPowerSet(i + 1, A, B);
     }
 }
+
+GetPowerSet(0,[1,2,3,4,5],[])
