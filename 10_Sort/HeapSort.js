@@ -1,8 +1,8 @@
 /**
- * @name: 简单选择排序
+ * @name: 堆排序
  * @param {Array} arr
  */
-function SelectSort(arr){
+function HeapSort(arr){
     //对顺序表arr做简单选择排序
     let j;
     for(let i=0;i<arr.length;i++){
@@ -23,12 +23,4 @@ function SelectSort(arr){
     }
 }
 var testArr = [7, 5, 3, 10, 2, 4, 1];
-console.log(SelectSort(testArr));
-
-/**
- * @name: 树形选择排序 减少选择对比的次数（不实现了）
- * @param {Array} arr
- */
-function TreeSelectSort(arr){
-
-}
+console.log(HeapSort(testArr));

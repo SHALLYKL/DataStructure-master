@@ -16,8 +16,46 @@
 
 ##### 希尔排序
 #### 快速排序
+> * 基本思想：通过一趟排序将待排记录分割成独立的两部分，其中一部分记录的值均比另一部分的小，则可分别对着两部分记录继续进行排序，以达到整个序列有序
+> * 具体做法：首先实现一趟快速排序，然后再递归。一趟快速排序是步骤：<br/>
+>   1. 附设low和high两个指针，设枢轴记录的关键字为pivot<br/>
+>   2. 从high所致位置向前搜索，找到第一个关键字小于pivot的记录和枢轴记录互相交换
+>   3. 从low所指位置向后搜索，找到第一个关键字大于pivot的记录和枢轴记录交换
+>   4. 重复这两步直至low=high为止
+> * 实现交换时，由于每一对记录都要进行3次记录移动，而实际上，可以直接在一趟排序结束时，再将枢轴记录到正确位置上。
+
+> * 代码如下：
+```JavaScript
+function Partition(arr,low,high){
+    let pivot = arr[low];
+    while(low<high){
+        while(low<high && arr[high]>=pivot) --high;
+        arr[low] = arr[high];
+        while(low<high && arr[low]<=pivot) ++low;
+        arr[high] = arr[low];
+    }
+    arr[low] = pivot; //将枢轴移到正确的位置上。
+    return low;
+}
+/**
+ * @name: 
+ * @param {Array} 数组
+ * @param {low} 基准
+ * @param {high} 基准
+ */
+function QuickSort1(arr,low,high){
+    low= low==void 0?0:low;
+    high = high==void 0?arr.length-1:high;
+    if(low<high){
+        pivotLoc = Partition(arr,low,high);
+        QuickSort1(arr,low,pivotLoc-1);
+        QuickSort1(arr,pivotLoc+1,high);
+    }
+}
+```
 #### 选择排序
 ##### 简单选择排序
+> * 基本思想：一趟简单选择排序的操作为：通过n-i次值之间的比较，从n-i+1个记录中选出关键字最小的记录，并和第i(1<=i<=n)个记录交换之
 ##### 树形选择排序
 ##### 堆排序
 #### 归并排序
