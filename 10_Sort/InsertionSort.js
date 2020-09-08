@@ -112,4 +112,5 @@ function BBInsertSort(arr){
 }
 var testArr = [3, 2, 1, 10, 8, 9, 10];
 console.log(BBInsertSort(testArr));
-// console.log(testArr);
+
+
