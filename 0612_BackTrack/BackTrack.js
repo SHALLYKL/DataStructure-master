@@ -35,7 +35,7 @@ function backtrack(arr,track){
 }
 
 var testArr = [1,2,3];
-permute(testArr);
+// permute(testArr);
 
 var queArr = [];
 /**
@@ -49,6 +49,7 @@ function NQueens(n){
     arr.length = n;
     for(let i=0;i<n;i++){
         arr[i] = [];
+        arr[i].length=n;
         arr[i].fill(0);
     }
     NQueensBacktrack(arr,0);
@@ -58,8 +59,9 @@ function NQueens(n){
 //选择列表：第row行的所有列都是放置皇后的选择
 //结束条件：row超过arr的最后一行
 function NQueensBacktrack(arr,row){
+    // console.log(arr,row)
     if(row == arr.length){
-        queArr.push(arr);
+        queArr.push([].concat(arr));
         return;
     }
     let n = arr[row].length;
@@ -67,13 +69,33 @@ function NQueensBacktrack(arr,row){
         //排除不合法选择
         if(!isValid(arr,row,col)) continue;
         //做选择
+        console.log(row,col);
         arr[row][col] = 1;
         //进入下一行决策
-        backtrack(arr,row+1);
+        NQueensBacktrack(arr,row+1);
         //撤销选择
         arr[row][col] = 0;
     }
 }
 function isValid(arr,row,col){
-    
+    let n = arr.length;
+    //检查列是否有皇后互相冲突
+    for(let i=0;i<n;i++){
+        if(arr[i][col] == 1){
+            return false;
+        }
+    }
+    //检查右上方是否有皇后互相冲突
+    for(let i = row-1,j=col+1;i>=0 && j<n;i--,j++){
+        if(arr[i][j]==1){
+            return false;
+        }
+    }
+    for(let i=row-1,j=col-1;i>=0&&j>=0;i--,j--){
+        if(arr[i][j]==1){
+            return false;
+        }
+    }
+    return true;
 }
+NQueens(4);
