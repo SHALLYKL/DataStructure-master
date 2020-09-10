@@ -5,5 +5,6 @@
  * @return {Int}  index 返回对应的下标
  */
 function binarySearch(table,key){
-
+    let pivot = Math.floor(table.length/2);
+    
 }

@@ -6,49 +6,77 @@
  */
 //
 // var data = [{i:0,j:0}];
-var data = [];
-function Trial(i,n){
-    //进入本函数时，在nxn棋盘前i-1行已放置了互不攻击的i-1个棋子
-    if(i>n){
-        //输出棋盘当前的布局 //n为4时，即为4皇后问题
-        console.log()
-    }else{
-        for(let j=0;j<n;++j){
-            //todo 在第i行第j列放置一个棋子
-            isLegal(data);
-            if(legal){//当前布局合法
-                Trial(i+1,n);
-            }else{
-                //todo 移走第i行第j列的棋子
-            }
-        }
-    }
-}
-
+var layout = [];
 /**
- * @name: 判断在i行y列放入棋子后棋盘布局是否合理
- * @param {Int} i 行
- * @return {Int} j 列
+ * @name: N皇后问题 输入棋盘边长n，返回所有合法的位置
+ * @param {Int} n 棋盘规格nxn
+ * @return {Array} 所有的解
  */
-function allowLayout(i, j) {
-    let m, n, k;
-    let s;
-    let len;
-    //在行中轮询
-    for (k = 0, n = j; k <= N - 1; k++) {
-        n = (n + 1) - n / N * N;
-        if (CB[i][n] == 1) {
-            return 0;
-        }
+function NQueens(n) {
+    //0表示空，1表示皇后，初始化空棋盘
+    let arr = [];
+    arr.length = n;
+    for (let i = 0; i < n; i++) {
+        arr[i] = [];
+        arr[i].length = n;
+        arr[i].fill(0);
     }
-    // 在列中轮询
-    for (k = 0, n = i; k <= N - 1; k++) {
-        m = (m + 1) - m / N * N;
-        if (CB[m][j] == 1) {
-            return 0;
-        }
-    }
-
+    NQueensBacktrack(arr, 0);
+    return layout;
 }
-var arr = [[1,0,0],[0,1,0],[0,0,1]]
-console.log(isLegal(arr));
+//因为是二维数组，需要用深拷贝
+function deepCopy(target, source) {
+    for (let i = 0; i < source.length; i++) {
+        if (source[i].constructor === Array) {
+            target[i] = [];
+            deepCopy(target[i], source[i]);
+        } else {
+            target[i] = source[i];
+        }
+    }
+    return target;
+}
+//路径：arr中小于row的那些都已经成功放置了皇后
+//选择列表：第row行的所有列都是放置皇后的选择
+//结束条件：row超过arr的最后一行
+function NQueensBacktrack(arr, row) {
+    // console.log(arr,row)
+    if (row == arr.length) {
+        layout.push(deepCopy([], arr));
+        return;
+    }
+    let n = arr[row].length;
+    for (let col = 0; col < n; col++) {
+        //排除不合法选择
+        if (!isValid(arr, row, col)) continue;
+        //做选择
+        console.log(row, col);
+        arr[row][col] = 1;
+        //进入下一行决策
+        NQueensBacktrack(arr, row + 1);
+        //撤销选择
+        arr[row][col] = 0;
+    }
+}
+function isValid(arr, row, col) {
+    let n = arr.length;
+    //检查列是否有皇后互相冲突
+    for (let i = 0; i < n; i++) {
+        if (arr[i][col] == 1) {
+            return false;
+        }
+    }
+    //检查右上方是否有皇后互相冲突
+    for (let i = row - 1, j = col + 1; i >= 0 && j < n; i-- , j++) {
+        if (arr[i][j] == 1) {
+            return false;
+        }
+    }
+    for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; i-- , j--) {
+        if (arr[i][j] == 1) {
+            return false;
+        }
+    }
+    return true;
+}
+console.log(NQueens(4));
