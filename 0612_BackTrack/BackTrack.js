@@ -55,13 +55,25 @@ function NQueens(n){
     NQueensBacktrack(arr,0);
     return queArr;
 }
+//因为是二维数组，需要用深拷贝
+function deepCopy(target,source){
+    for(let i=0;i<source.length;i++){
+        if (source[i].constructor === Array){
+            target[i] = [];
+            deepCopy(target[i],source[i]);
+        }else{
+            target[i] = source[i];
+        }
+    }
+    return target;
+}
 //路径：arr中小于row的那些都已经成功放置了皇后
 //选择列表：第row行的所有列都是放置皇后的选择
 //结束条件：row超过arr的最后一行
 function NQueensBacktrack(arr,row){
     // console.log(arr,row)
     if(row == arr.length){
-        queArr.push([].concat(arr));
+        queArr.push(deepCopy([],arr));
         return;
     }
     let n = arr[row].length;
@@ -108,3 +120,4 @@ var b = function(){
     
 }
 NQueens(4);
+console.log(NQueens(4));
