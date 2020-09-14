@@ -98,4 +98,13 @@ function isValid(arr,row,col){
     }
     return true;
 }
+function A(){
+
+}
+var a =function(){
+
+}
+var b = function(){
+    
+}
 NQueens(4);
