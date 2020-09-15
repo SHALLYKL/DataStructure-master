@@ -18,24 +18,32 @@ function BiTree(val,left,right) {
     this.left = left;
     this.right = right;
 }
-//按线序次序输入二叉树中结点的值，null表示空树
+//按先序次序输入二叉树中结点的值，null表示空树
 //构造二叉树
 function CreateBiTree(arr){
     var res = new BiTree();
-    var index = 0;
-    function create(arr,T){
-        if(arr==void 0) return null;
-        console.log(arr,index,T);
-        T = T==void 0?new BiTree():T;
+    // var index = 0;
+    
+    function create(T,index){
+        if(index>arr.length-1) return null;
+        if (arr[index] == void 0){
+            // index++;
+            return T=null;
+        }
+        // T = new BiTree();
+        // T = new BiTree();
         T.val = arr[index];
-        CreateBiTree(arr[index+1],index+1,T.left);//构造左子树
-        CreateBiTree(arr[index+2],index+2,T.right);//构造右子树
-        // return T;
+        // index++;
+        T.left = new BiTree();
+        T.right = new BiTree();
+        T.left = create(T.left,++index);//构造左子树
+        T.right = create(T.right,++index);//构造右子树
+        return T;
     }
-    create(arr,0,res)
+    create(res,0);
     return res;
 };
-CreateBiTree([1,null,1]);
+CreateBiTree([1,null,1,1,2,3]);
 var proto = BiTree.prototype;
 /**
  * 转置矩阵 （该算法虽然节省了空间，但是时间复杂度高了。因此该算法仅适用于tu<<muxnu的情况）
