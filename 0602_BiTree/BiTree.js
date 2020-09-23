@@ -13,55 +13,44 @@
  *    this.right = right;
  * };
  */
-function BiTree(val,left,right) {
+function TreeNode(val,left,right) {
     this.val = val;
-    this.left = left;
-    this.right = right;
+    this.left = left===undefined?null:left;
+    this.right = right === undefined ? null : right;
 }
-//按先序次序输入二叉树中结点的值，null表示空树
-//构造二叉树
-function CreateBiTree(arr){
-    var res = new BiTree();
-    // var index = 0;
-    
-    function create(T,index){
-        if(index>arr.length-1) return null;
-        if (arr[index] == void 0){
-            // index++;
-            return T=null;
-        }
-        // T = new BiTree();
-        // T = new BiTree();
-        T.val = arr[index];
-        // index++;
-        T.left = new BiTree();
-        T.right = new BiTree();
-        T.left = create(T.left,++index);//构造左子树
-        T.right = create(T.right,++index);//构造右子树
-        return T;
-    }
-    create(res,0);
-    return res;
-};
-CreateBiTree([1,null,1,1,2,3]);
-var proto = BiTree.prototype;
+
 /**
- * 转置矩阵 （该算法虽然节省了空间，但是时间复杂度高了。因此该算法仅适用于tu<<muxnu的情况）
- * @param {M} M ={data:{[null,{i,j,e},...]},mu:矩阵的行数,nu:矩阵的列数,tu:非零个数}
- * @returns {Boolean} true
+ * @name: 根据先序和中序遍历结果，还原二叉树(二叉树中没有值相同的结点)
+ * @param {type} 
+ * @return {type} 
  */
+var buildTree = function buildTree(preorder,inorder){
+    return build(preorder,0,preorder.length-1,inorder,0,inorder.length-1);
+}
+function build(preorder,preStart,preEnd,inorder,inStart,inEnd){
+    console.log(preStart, preEnd);
+    if(preStart>preEnd){return null;}
+    let rootVal = preorder[preStart];
+    let index = inorder.indexOf(rootVal);
+    let leftSize = index-inStart;
+    let rightSize = inEnd-index;
+    
+    let root = new TreeNode(rootVal);
+    root.left = build(preorder,preStart+1,preStart+leftSize,inorder,inStart,index-1);
+    root.right = build(preorder, preStart + leftSize+1,preEnd,inorder,index+1,inEnd);
+    return root;
+}
+var proto = TreeNode.prototype;
+
 proto.init = function(){
     
 }
-proto.createBiTree = function(){
-
-}
 proto.preOrder = function(){
-
+    
 }
 /**
  * @name: 先序遍历二叉树
- * @param {BiTree} tree
+ * @param {TreeNode} tree
  * @return {Array} 
  */
 function preOrder(tree){
@@ -79,7 +68,7 @@ function preOrder(tree){
 
 /**
  * @name: 中序遍历二叉树
- * @param {BiTree} tree
+ * @param {TreeNode} tree
  * @return {Array} 
  */
 function inOrder(tree){
@@ -96,7 +85,7 @@ function inOrder(tree){
 }
 /**
  * @name: 中序遍历二叉树
- * @param {BiTree} tree
+ * @param {TreeNode} tree
  * @return {Array} 
  */
 function postOrder(tree){
