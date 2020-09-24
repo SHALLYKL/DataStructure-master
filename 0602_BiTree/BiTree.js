@@ -40,6 +40,26 @@ function build(preorder,preStart,preEnd,inorder,inStart,inEnd){
     root.right = build(preorder, preStart + leftSize+1,preEnd,inorder,index+1,inEnd);
     return root;
 }
+
+/**
+ * @name: 根据中序和后序遍历结果，还原二叉树
+ * @param {Array} inorder 中序遍历结果
+ * @param {Array} postorder 后续遍历结果
+ * @return  {TreeNode}  二叉树结构
+ * */
+
+var buildTree2 = function buildTree(inorder, postorder) {
+    return build2(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
+}
+function build2(inorder, inStart, inEnd, postorder, postStart, postEnd) {
+    if (inStart > inEnd) { return null; }
+    let rootVal = postorder[postEnd];
+    let index = inorder.indexOf(rootVal);
+    let rightSize = inEnd - index;
+    let root = new TreeNode(rootVal);
+    root.left = build2(inorder, inStart, index - 1, postorder, postStart, postEnd - rightSize - 1);
+    root.right = build2(inorder, index + 1, inEnd, postorder, postEnd - rightSize, postEnd - 1);
+}
 var proto = TreeNode.prototype;
 
 proto.init = function(){
