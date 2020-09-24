@@ -60,6 +60,24 @@ function build2(inorder, inStart, inEnd, postorder, postStart, postEnd) {
     root.left = build2(inorder, inStart, index - 1, postorder, postStart, postEnd - rightSize - 1);
     root.right = build2(inorder, index + 1, inEnd, postorder, postEnd - rightSize, postEnd - 1);
 }
+
+/**
+ * @name: 根据已排好序的数组构造平衡搜索二叉树（BST）
+ * @param {Array} nums 已排好序的数组
+ * @return {TreeNode} 构造好的平衡搜索二叉树 
+ */
+var sortedArrayToBST = function (nums) {
+    return bst(nums, 0, nums.length - 1)
+};
+function bst(nums, start, end) {
+    if (start > end) return null;
+    let mid = Math.floor((start + end) / 2);
+    let node = new TreeNode(nums[mid]);
+    node.left = bst(nums, start, mid - 1);
+    node.right = bst(nums, mid + 1, end);
+    return node;
+}
+
 var proto = TreeNode.prototype;
 
 proto.init = function(){
@@ -96,8 +114,8 @@ function inOrder(tree){
     let res = [];
     function traverse(tree,res){
         if(tree==void 0) return res;
-        res.push(tree.val);
         traverse(tree.left,res);
+        res.push(tree.val);
         traverse(tree.right,res);
     }
     traverse(tree,res);
@@ -113,9 +131,9 @@ function postOrder(tree){
     let res = [];
     function traverse(tree,res){
         if(tree==void 0) return res;
-        res.push(tree.val);
         traverse(tree.left,res);
         traverse(tree.right,res);
+        res.push(tree.val);
     }
     traverse(tree,res);
     return res;
