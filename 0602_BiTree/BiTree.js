@@ -78,6 +78,64 @@ function bst(nums, start, end) {
     return node;
 }
 
+/**
+ * @name: 判断一颗二叉树是否是平衡二叉树(先序遍历，时间复杂度为O(n^2))
+ * @param {type}
+ * @return {type}
+ */
+var isBalanced = function (root) {
+    if (root == null) return true;
+    //获取左右的深度
+    var leftDeep = getDeep(root.left);
+    var rightDeep = getDeep(root.right);
+    //若左右深度相差大于1，则不是平衡树
+    if (Math.abs(leftDeep - rightDeep) > 1) {
+        return false;
+    } else {
+        //判断左右子树是否平衡
+        return isBalanced(root.left) && isBalanced(root.right);
+    }
+}
+//获取树的深度
+function getDeep(root) {
+    if (root == null) return 0;
+    if (root.left == void 0 && root.right == void 0) return 1;
+    return Math.max(getDeep(root.left), getDeep(root.right)) + 1;//取两个深度中最大的一个，加上自身
+}
+
+/**
+ * @name: 判断一颗二叉树是否是平衡二叉树(后序遍历，时间复杂度为O(n))(该方法还有问题，需要解决)
+ * @param {type} 
+ * @return {type} 
+ */
+var isBalanced = function (root) {
+    if (!root) return true;
+    return helper(root, 1);
+};
+//由于先序遍历要先求出树的深度，因此这次走后序遍历来实现,
+// 由于这里不方便用引用，因此定义了一个全局变量depth，depth[1]表示左子树的深度,depth[2]表示右子树的深度
+function helper(root, dir) {
+    //如果为空，往父节点返
+    if (root == null) {
+        depth[dir] = 0;
+        return true;
+    }
+    let left = 0;
+    let right = 0;
+    //记录左节点和右节点的深度
+    if (helper(root.left, 1) && helper(root.right, 2)) {
+        let pf = depth[1] - depth[2];
+        if (Math.abs(pf) < 2) {
+            let tmpDir = depth[2] > depth[1] ? 2 : 1;
+            // depth[dir]+=1;
+            depth[dir] = 1 + depth[tmpDir];
+            return true;
+        }
+    }
+    return false;
+}
+
+
 var proto = TreeNode.prototype;
 
 proto.init = function(){
