@@ -135,6 +135,70 @@ function helper(root, dir) {
     return false;
 }
 
+/**路径综合#113
+ * @param {TreeNode} root
+ * @param {number} sum
+ * @return {number[][]}
+ */
+//题解思路：前序遍历 + 递归回溯。
+//我们用前序遍历来一次提取所有二叉树中从 root 到叶节点的路径，
+//并把路径上节点的和与 sum 比较。
+var temp = [];
+var res = [];
+var pathSum = function (root, sum) {
+    if(root==void 0) return [];
+    preorder(root,sum);
+    return res;
+};
+function preorder(root,sum){
+    if(root==void 0) return;
+    sum-=root.val;
+    temp.push(root.val);
+    if(sum==0 && root.left==void 0 && root.right==void 0){
+        res.push([].concat(temp));
+    }
+    preorder(root.left,sum);
+    preorder(root.right,sum);
+    temp.pop();
+}
+/** 将二叉树展开为链表#114
+ * @param {TreeNode} root
+ * @return {void} Do not return anything, modify root in-place instead.
+ */
+var flatten = function (root) {
+    if (root == null) return;
+    flatten(root.left);
+    flatten(root.right);
+    let left = root.left;
+    let right = root.right;
+    root.left = null;
+    root.right = left;
+    let p = root;
+    while(p.right!=void 0){
+        p=p.right;
+    }
+    p.right = right;
+};
+/** 将二叉树展开为链表 #114 通过寻找前驱节点来实现，时间复杂度O(n),空间复杂度O(1)
+ * @param {TreeNode} root
+ * @return {void} Do not return anything, modify root in-place instead.
+ */
+var flatten = function(root){
+    let cur = root;
+    while(cur!=void 0){
+        if(cur.left!=void 0){
+            let next = cur.left;
+            let prev = next;
+            while(prev.right!=void 0){
+                prev = prev.right;
+            }
+            prev.right = cur.right;
+            cur.left = null;
+            cur.right = next;
+        }
+        cur = cur.right;
+    }
+}
 
 var proto = TreeNode.prototype;
 
